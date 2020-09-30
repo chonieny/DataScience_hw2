@@ -46,3 +46,14 @@ snp_df = read.csv("./data/fivethirtyeight_datasets/snp.csv") %>%
   mutate(year = as.integer(year)) %>%
   relocate(year)
 ```
+
+# Clean the data in unemployment.csv
+
+``` r
+unemployment_df = read.csv("./data/fivethirtyeight_datasets/unemployment.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    jan:dec,
+    names_to = "month",
+    values_to = "unemployment") 
+```
