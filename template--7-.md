@@ -1,0 +1,36 @@
+Homework 2
+================
+Na Yun Cho
+
+``` r
+library(tidyverse)
+```
+
+    ## -- Attaching packages --------------------------------------------------------------------------------- tidyverse 1.3.0 --
+
+    ## v ggplot2 3.3.2     v purrr   0.3.4
+    ## v tibble  3.0.3     v dplyr   1.0.2
+    ## v tidyr   1.1.2     v stringr 1.4.0
+    ## v readr   1.3.1     v forcats 0.5.0
+
+    ## -- Conflicts ------------------------------------------------------------------------------------ tidyverse_conflicts() --
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+# Problem 3
+
+# Clean the data in pols-month.csv
+
+``` r
+pols_month = read.csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
+  janitor::clean_names() %>%
+  separate(mon, into = c('year', 'month', 'day'), sep = '-') %>%
+  mutate(month = as.numeric(month)) %>%
+  mutate(year = as.integer(year)) %>%
+  mutate(president = case_when(
+    prez_gop == 0 ~ 'dem',
+    prez_gop == 1 ~ 'gop',
+    prez_gop == 2 ~ 'dem')) %>%
+  select(-c(prez_gop, prez_dem, day)) %>%
+  relocate(year)
+```

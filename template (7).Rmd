@@ -1,0 +1,28 @@
+---
+title: "Homework 2"
+author: Na Yun Cho
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+# Problem 3
+
+# Clean the data in pols-month.csv 
+```{r}
+pols_month = read.csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
+  janitor::clean_names() %>%
+  separate(mon, into = c('year', 'month', 'day'), sep = '-') %>%
+  mutate(month = as.numeric(month)) %>%
+  mutate(year = as.integer(year)) %>%
+  mutate(president = case_when(
+    prez_gop == 0 ~ 'dem',
+    prez_gop == 1 ~ 'gop',
+    prez_gop == 2 ~ 'dem')) %>%
+  select(-c(prez_gop, prez_dem, day)) %>%
+  relocate(year)
+
+```
+
