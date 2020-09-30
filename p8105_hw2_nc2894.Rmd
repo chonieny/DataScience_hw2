@@ -24,11 +24,59 @@ Short paragraph about the dataset:
 
 
 Answer 1 of the dataset: 
-there are a total of `r nrow(distinct(transit_df, line)) * nrow(distinct(transit_df, station_name))` distinct stations.
+there are `r nrow(distinct(transit_df, line)) * nrow(distinct(transit_df, station_name))` distinct stations.
 
+# Stations that are ADA compliant
+```{r}
+transit_df_ada = filter(transit_df, ada == TRUE)
+transit_df_ada
+```
 
+Answer 2 of the dataset: 
+there are `r nrow(distinct(transit_df_ada, line)) * nrow(distinct(transit_df_ada, station_name))` stations that are ADA compliant.
 
+# Station entrnaces/exits without vending
+```{r}
+transit_df_novend = filter(transit_df, vending != 'YES')
+```
 
+# Station entrances/exists without vending that allow entrance
+```{r}
+transit_df_novend_entry = filter(transit_df_novend, entry == TRUE)
+```
+
+Answer 3 of the dataset: 
+`r round(nrow(transit_df_novend_entry)/nrow(transit_df_novend) * 100, 2)`% of station entrances/exits without vending allow entrance.
+
+# Reformat the data
+```{r}
+transit_df_reformatted = 
+  transit_df %>%
+  mutate(
+    route8 = as.character(route8),
+    route9 = as.character(route9),
+    route10 = as.character(route10),
+    route11 = as.character(route11)) %>%
+  pivot_longer(
+    route1:route11,
+    names_to = "route_number",
+    values_to = "route_name")
+  
+```
+
+# Distinct stations that serve the A train
+```{r}
+transit_df_A = filter(transit_df_reformatted, route_name == 'A')
+```
+
+# ADA compliant stations that serve the A train
+```{r}
+transit_df_A_ada = filter(transit_df_A, ada == TRUE)
+```
+
+Answer 4 & 5 of the data set:
+There are `r nrow(distinct(transit_df_A, line)) * nrow(distinct(transit_df_A, station_name))` distinct stations that serve the A train.
+Of the stations that serve the A train, `r nrow(transit_df_A_ada)` are ADA compliant.
 
 
 # Problem 3
