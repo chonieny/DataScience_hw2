@@ -8,6 +8,29 @@ output: github_document
 library(tidyverse)
 ```
 
+# Problem 2
+
+# Clean the data, convert variable types
+```{r}
+transit_df = read.csv("./data/transit_data.csv") %>%
+  janitor::clean_names() %>%
+  select(c(line:entry, vending, ada)) %>%
+  mutate(entry = recode(entry, 'YES' = TRUE, 'NO' = FALSE)) 
+
+```
+
+Short paragraph about the dataset: 
+
+
+
+Answer 1 of the dataset: 
+there are a total of `r nrow(distinct(transit_df, line)) * nrow(distinct(transit_df, station_name))` distinct stations.
+
+
+
+
+
+
 # Problem 3
 
 # Clean the data in pols-month.csv 
