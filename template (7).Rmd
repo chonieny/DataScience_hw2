@@ -26,3 +26,14 @@ pols_month = read.csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
 
 ```
 
+# Clean the data in snp.csv
+```{r}
+snp_df = read.csv("./data/fivethirtyeight_datasets/snp.csv") %>%
+  janitor::clean_names() %>%
+  separate(date, into = c('month', 'day', 'year'), sep = '/') %>%
+  mutate(month = as.numeric(month)) %>%
+  mutate(month = month.abb[month]) %>%
+  mutate(year = as.integer(year)) %>%
+  relocate(year)
+```
+
