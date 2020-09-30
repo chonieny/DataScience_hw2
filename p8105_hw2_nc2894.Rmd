@@ -6,11 +6,29 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(readxl)
 ```
+
+# Problem 1
+
+Clean the Mr. Trash Wheel dataset
+```{r}
+trashweel_df =
+  read_xlsx("./data/trashwheel_data.xlsx", 
+          sheet = "Mr. Trash Wheel",
+          range = cell_cols("A:N")) %>%
+  janitor::clean_names() %>%
+  drop_na(dumpster) %>%
+  mutate(
+    sports_balls = round(sports_balls),
+    sports_balls = as.integer(sports_balls))
+
+```
+
 
 # Problem 2
 
-# Clean the data, convert variable types
+# Clean the NYC Transit dataset, convert variable types
 ```{r}
 transit_df = read.csv("./data/transit_data.csv") %>%
   janitor::clean_names() %>%
@@ -20,19 +38,24 @@ transit_df = read.csv("./data/transit_data.csv") %>%
 ```
 
 Short paragraph about the dataset: 
-
-
+This dataset shows information regarding each entrance and exit for each subway station in New York City.
+Some of the imporant variables present in the dataset are 'Station Name', 'Line', 'Routes', 'Vending', 'ADA', 'Entry', and 'Entrance Type'.
+The dataset has `r nrow(transit_df)` rows and `r ncol(transit_df)` columns. 
+In order to clean the data, so far I have attempted to format the variable names more consistently and selected the columns that I need most. 
+I also turned the 'entry' variable from character type to a logical variable. 
+However, the data in the dataset are not tidy yet because the route number and route name are still kept as the same variable.
 
 Answer 1 of the dataset: 
+
 there are `r nrow(distinct(transit_df, line)) * nrow(distinct(transit_df, station_name))` distinct stations.
 
 # Stations that are ADA compliant
 ```{r}
 transit_df_ada = filter(transit_df, ada == TRUE)
-transit_df_ada
 ```
 
-Answer 2 of the dataset: 
+Answer 2 of the dataset:
+
 there are `r nrow(distinct(transit_df_ada, line)) * nrow(distinct(transit_df_ada, station_name))` stations that are ADA compliant.
 
 # Station entrnaces/exits without vending
@@ -45,7 +68,8 @@ transit_df_novend = filter(transit_df, vending != 'YES')
 transit_df_novend_entry = filter(transit_df_novend, entry == TRUE)
 ```
 
-Answer 3 of the dataset: 
+Answer 3 of the dataset:
+
 `r round(nrow(transit_df_novend_entry)/nrow(transit_df_novend) * 100, 2)`% of station entrances/exits without vending allow entrance.
 
 # Reformat the data
@@ -69,14 +93,20 @@ transit_df_reformatted =
 transit_df_A = filter(transit_df_reformatted, route_name == 'A')
 ```
 
+Answer 4 of the dataset: 
+
+There are `r nrow(distinct(transit_df_A, line)) * nrow(distinct(transit_df_A, station_name))` distinct stations that serve the A train.
+
 # ADA compliant stations that serve the A train
 ```{r}
 transit_df_A_ada = filter(transit_df_A, ada == TRUE)
 ```
 
-Answer 4 & 5 of the data set:
-There are `r nrow(distinct(transit_df_A, line)) * nrow(distinct(transit_df_A, station_name))` distinct stations that serve the A train.
+Answer 5 of the data set:
+
 Of the stations that serve the A train, `r nrow(transit_df_A_ada)` are ADA compliant.
+
+
 
 
 # Problem 3
@@ -128,3 +158,13 @@ final_df = left_join(snp_pols_df, unemployment_df, by = c("year", "month"))
                                                   
 ```
 
+Short paragraph about these datasets:
+
+First, the pol-month dataset contains information about the number of politicians who are democratic or republican at any given time. 
+Second, the snp dataset shows information regarding the Standard & Poor's stock market index on any given date.
+Lastly, the unemployment dataset contains information about the percentages of unemployment in a given month of certain years. 
+The final resulting dataset contains all the information from these three individual datasets merged together by the common variables of 'year' and 'month'. 
+The dimensions of the resulting dataset are `r nrow(final_df)` rows and `r ncol(final_df)` columns. 
+The range of the years covered in this final dataset is `r max(final_df$year)` - `r min(final_df$year)` years, which is 68 years.  
+This dataset contains the following variables - `r ls(final_df)`. 
+Among these variables, some of the key variables are 'year', 'month', 'president', 'unemployment', and 'close'.
